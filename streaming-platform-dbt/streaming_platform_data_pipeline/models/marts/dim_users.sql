@@ -5,9 +5,6 @@ WITH stg_ratings AS (
 stg_tags AS (
     SELECT DISTINCT user_id FROM {{ ref('stg_tags') }}
 )
-SELECT DISTINCT user_id
-FROM (
-    SELECT * FROM stg_ratings
-    UNION
-    SELECT * FROM stg_tags
-)
+SELECT * FROM stg_ratings
+UNION
+SELECT * FROM stg_tags
