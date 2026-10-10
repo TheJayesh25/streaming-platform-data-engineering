@@ -35,3 +35,9 @@ models:
     staging:
       +materialized: view
       +snowflake_warehouse: MOVIELENS_WH
+      +schema: STAGING
+
+    # marts:
+    #   +materialized: tables
+    #   +snowflake_warehouse: MOVIELENS_WH
+    #   +schema: MARTS
