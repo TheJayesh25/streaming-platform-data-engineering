@@ -16,7 +16,7 @@ SELECT
     movie_id,
     tag,
     CAST(tag_timestamp AS TIMESTAMP_NTZ) AS tag_timestamp
-FROM {{ ref('src_tags') }}
+FROM {{ ref('stg_tags') }}
 LIMIT 100 
 
 {% endsnapshot %}
