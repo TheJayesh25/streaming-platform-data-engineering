@@ -1,0 +1,256 @@
+version: 2
+
+models:
+
+  # ============================================================
+  # DIMENSIONS
+  # ============================================================
+
+  - name: dim_movies
+    description: >
+      Movie dimension containing MovieLens movie metadata and external
+      IMDb and TMDB identifiers. Grain: one row per movie.
+
+    columns:
+      - name: movie_id
+        description: Unique identifier for the movie.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: movie_title
+        description: Standardized movie title.
+        data_tests:
+          - not_null
+
+      - name: imdb_id
+        description: External IMDb identifier for the movie.
+
+      - name: tmdb_id
+        description: External TMDB identifier for the movie.
+
+
+  - name: dim_users
+    description: >
+      User dimension derived from users observed in MovieLens rating and
+      tagging activity. No demographic attributes are inferred or invented.
+      Grain: one row per observed user.
+
+    columns:
+      - name: user_id
+        description: Unique identifier for the user.
+        data_tests:
+          - not_null
+          - unique
+
+
+  - name: dim_genres
+    description: >
+      Normalized movie genre dimension derived from the multi-valued genre
+      field in the MovieLens movie dataset. Grain: one row per genre.
+
+    columns:
+      - name: genre_id
+        description: Surrogate key for the genre.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: genre_name
+        description: Standardized genre name.
+        data_tests:
+          - not_null
+          - unique
+
+
+  - name: dim_genome_tags
+    description: >
+      Genome tag dimension describing content characteristics used by the
+      MovieLens genome dataset. Grain: one row per genome tag.
+
+    columns:
+      - name: tag_id
+        description: Unique identifier for the genome tag.
+        data_tests:
+          - not_null
+          - unique
+
+      - name: tag
+        description: Genome tag name.
+        data_tests:
+          - not_null
+
+
+  # ============================================================
+  # BRIDGE
+  # ============================================================
+
+  - name: bridge_movie_genres
+    description: >
+      Bridge table resolving the many-to-many relationship between movies
+      and genres. Grain: one row per movie-genre relationship.
+
+    columns:
+      - name: movie_id
+        description: Identifier for the movie.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_movies')
+              field: movie_id
+
+      - name: genre_id
+        description: Identifier for the genre.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_genres')
+              field: genre_id
+
+
+  # ============================================================
+  # FACTS
+  # ============================================================
+
+  - name: fct_ratings
+    description: >
+      Event fact capturing individual user ratings of movies. Grain: one
+      rating submitted by one user for one movie at one timestamp.
+
+    columns:
+      - name: user_id
+        description: Identifier for the user who submitted the rating.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_users')
+              field: user_id
+
+      - name: movie_id
+        description: Identifier for the rated movie.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_movies')
+              field: movie_id
+
+      - name: rating
+        description: User-provided movie rating on a 0 to 5 scale.
+        data_tests:
+          - not_null
+
+      - name: rating_timestamp
+        description: Timestamp when the rating was submitted.
+        data_tests:
+          - not_null
+
+
+  - name: fct_movie_tags
+    description: >
+      Event fact capturing user-generated tags applied to movies. Grain:
+      one tag submitted by one user for one movie at one timestamp.
+
+    columns:
+      - name: user_id
+        description: Identifier for the user who submitted the tag.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_users')
+              field: user_id
+
+      - name: movie_id
+        description: Identifier for the tagged movie.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_movies')
+              field: movie_id
+
+      - name: tag
+        description: User-generated tag text.
+        data_tests:
+          - not_null
+
+      - name: tag_timestamp
+        description: Timestamp when the tag was submitted.
+        data_tests:
+          - not_null
+
+
+  - name: fct_genome_tag_relevance
+    description: >
+      Fact table containing movie-to-genome-tag relevance scores used to
+      represent content characteristics. Grain: one movie-genome-tag
+      relationship.
+
+    columns:
+      - name: movie_id
+        description: Identifier for the movie.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_movies')
+              field: movie_id
+
+      - name: tag_id
+        description: Identifier for the genome tag.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_genome_tags')
+              field: tag_id
+
+      - name: relevance_score
+        description: Relevance score indicating the strength of the tag's association with the movie.
+        data_tests:
+          - not_null
+
+
+  # ============================================================
+  # ANALYTICAL MART
+  # ============================================================
+
+  - name: movie_rating_metrics
+    description: >
+      Daily movie-level rating performance metrics derived from rating
+      events. Grain: one movie per calendar date with at least one rating.
+
+    columns:
+      - name: rating_date
+        description: Calendar date on which the ratings were submitted.
+        data_tests:
+          - not_null
+
+      - name: movie_id
+        description: Identifier for the movie.
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_movies')
+              field: movie_id
+
+      - name: rating_count
+        description: Number of ratings received by the movie on the date.
+        data_tests:
+          - not_null
+
+      - name: unique_raters
+        description: Number of distinct users who rated the movie on the date.
+        data_tests:
+          - not_null
+
+      - name: average_rating
+        description: Average rating received by the movie on the date.
+        data_tests:
+          - not_null
+
+      - name: minimum_rating
+        description: Lowest rating received by the movie on the date.
+        data_tests:
+          - not_null
+
+      - name: maximum_rating
+        description: Highest rating received by the movie on the date.
+        data_tests:
+          - not_null
