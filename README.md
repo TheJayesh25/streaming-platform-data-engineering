@@ -369,7 +369,6 @@ These are intentionally outside the current dbt modeling scope.
 ---
 
 ## Dataset
-
 The project uses the MovieLens 20M dataset published by the GroupLens
 research group.
 
