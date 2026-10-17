@@ -1,5 +1,5 @@
 WITH raw_ratings AS (
-    SELECT * FROM MOVIELENS.RAW.RAW_RATINGS
+    SELECT * FROM {{ source('movielens','r_ratings') }}
 )
 SELECT 
     userId AS user_id,
