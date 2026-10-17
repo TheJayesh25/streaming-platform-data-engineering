@@ -1,10 +1,17 @@
-WITH stg_ratings AS (
-    SELECT DISTINCT user_id FROM {{ ref('stg_ratings') }}
+WITH rating_users AS (
+    SELECT DISTINCT user_id
+    FROM {{ ref('stg_ratings') }}
 ),
 
-stg_tags AS (
-    SELECT DISTINCT user_id FROM {{ ref('stg_tags') }}
+tag_users AS (
+    SELECT DISTINCT user_id
+    FROM {{ ref('stg_tags') }}
 )
-SELECT * FROM stg_ratings
+
+SELECT user_id
+FROM rating_users
+
 UNION
-SELECT * FROM stg_tags
+
+SELECT user_id
+FROM tag_users
