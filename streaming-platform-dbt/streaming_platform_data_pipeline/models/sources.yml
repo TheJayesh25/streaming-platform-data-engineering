@@ -19,9 +19,14 @@ sources:
         columns:
           - name: movieId
             description: Unique identifier for each movie.
+            data_tests:
+              - not_null
+              - unique
 
           - name: title
             description: Movie title.
+            data_tests:
+              - not_null
 
           - name: genres
             description: Pipe-delimited list of genres associated with the movie.
@@ -36,15 +41,23 @@ sources:
         columns:
           - name: userId
             description: Unique identifier for the user who submitted the rating.
+            data_tests:
+              - not_null
 
           - name: movieId
             description: Unique identifier for the rated movie.
+            data_tests:
+              - not_null
 
           - name: rating
             description: User-provided movie rating on a 0 to 5 scale.
+            data_tests:
+              - not_null
 
           - name: timestamp
             description: Unix timestamp indicating when the rating was submitted.
+            data_tests:
+              - not_null
 
 
       - name: r_tags
@@ -56,15 +69,23 @@ sources:
         columns:
           - name: userId
             description: Unique identifier for the user who submitted the tag.
+            data_tests:
+              - not_null
 
           - name: movieId
             description: Unique identifier for the tagged movie.
+            data_tests:
+              - not_null
 
           - name: tag
             description: User-generated descriptive tag.
+            data_tests:
+              - not_null
 
           - name: timestamp
             description: Unix timestamp indicating when the tag was submitted.
+            data_tests:
+              - not_null
 
 
       - name: r_genome_tags
