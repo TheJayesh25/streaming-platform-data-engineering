@@ -75,7 +75,7 @@ models:
           - not_null
           - unique
 
-      - name: tag
+      - name: tag_name
         description: Genome tag name.
         data_tests:
           - not_null
@@ -96,16 +96,18 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_movies')
-              field: movie_id
+              arguments:
+                to: ref('dim_movies')
+                field: movie_id
 
       - name: genre_id
         description: Identifier for the genre.
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_genres')
-              field: genre_id
+              arguments:
+                to: ref('dim_genres')
+                field: genre_id
 
 
   # ============================================================
@@ -123,16 +125,18 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_users')
-              field: user_id
+              arguments:
+                to: ref('dim_users')
+                field: user_id
 
       - name: movie_id
         description: Identifier for the rated movie.
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_movies')
-              field: movie_id
+              arguments:
+                to: ref('dim_movies')
+                field: movie_id
 
       - name: rating
         description: User-provided movie rating on a 0 to 5 scale.
@@ -156,16 +160,18 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_users')
-              field: user_id
+              arguments:
+                to: ref('dim_users')
+                field: user_id
 
       - name: movie_id
         description: Identifier for the tagged movie.
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_movies')
-              field: movie_id
+              arguments:
+                to: ref('dim_movies')
+                field: movie_id
 
       - name: tag
         description: User-generated tag text.
@@ -190,16 +196,18 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_movies')
-              field: movie_id
+              arguments:
+                to: ref('dim_movies')
+                field: movie_id
 
       - name: tag_id
         description: Identifier for the genome tag.
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_genome_tags')
-              field: tag_id
+              arguments:
+                to: ref('dim_genome_tags')
+                field: tag_id
 
       - name: relevance_score
         description: Relevance score indicating the strength of the tag's association with the movie.
@@ -227,8 +235,9 @@ models:
         data_tests:
           - not_null
           - relationships:
-              to: ref('dim_movies')
-              field: movie_id
+              arguments:
+                to: ref('dim_movies')
+                field: movie_id
 
       - name: rating_count
         description: Number of ratings received by the movie on the date.
