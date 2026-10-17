@@ -1,19 +1,113 @@
-version: 2 
-
+version: 2
 
 sources:
   - name: movielens
+    description: >
+      Raw MovieLens dataset loaded into Snowflake from Amazon S3.
+      These tables represent the source layer for the streaming-platform
+      content and engagement analytics pipeline.
+
     schema: raw
+
     tables:
-     - name: r_movies
-       identifier: raw_movies
-     - name: r_ratings
-       identifier: raw_ratings
-     - name: r_tags
-       identifier: raw_tags
-     - name: r_genome_tags
-       identifier: raw_genome_tags
-     - name: r_genome_scores
-       identifier: raw_genome_scores
-     - name: r_links
-       identifier: raw_links
+
+      - name: r_movies
+        identifier: raw_movies
+        description: >
+          Movie-level metadata including movie title and pipe-delimited genres.
+
+        columns:
+          - name: movieId
+            description: Unique identifier for each movie.
+
+          - name: title
+            description: Movie title.
+
+          - name: genres
+            description: Pipe-delimited list of genres associated with the movie.
+
+
+      - name: r_ratings
+        identifier: raw_ratings
+        description: >
+          User rating events for movies. Each record represents a rating
+          submitted by a user for a movie at a specific timestamp.
+
+        columns:
+          - name: userId
+            description: Unique identifier for the user who submitted the rating.
+
+          - name: movieId
+            description: Unique identifier for the rated movie.
+
+          - name: rating
+            description: User-provided movie rating on a 0 to 5 scale.
+
+          - name: timestamp
+            description: Unix timestamp indicating when the rating was submitted.
+
+
+      - name: r_tags
+        identifier: raw_tags
+        description: >
+          User-generated tags applied to movies, including the user,
+          movie, tag text, and timestamp.
+
+        columns:
+          - name: userId
+            description: Unique identifier for the user who submitted the tag.
+
+          - name: movieId
+            description: Unique identifier for the tagged movie.
+
+          - name: tag
+            description: User-generated descriptive tag.
+
+          - name: timestamp
+            description: Unix timestamp indicating when the tag was submitted.
+
+
+      - name: r_genome_tags
+        identifier: raw_genome_tags
+        description: >
+          Genome tag definitions used to describe movie characteristics.
+
+        columns:
+          - name: tagId
+            description: Unique identifier for the genome tag.
+
+          - name: tag
+            description: Genome tag name.
+
+
+      - name: r_genome_scores
+        identifier: raw_genome_scores
+        description: >
+          Movie-to-genome-tag relevance scores representing how strongly
+          each tag is associated with a movie.
+
+        columns:
+          - name: movieId
+            description: Unique identifier for the movie.
+
+          - name: tagId
+            description: Unique identifier for the genome tag.
+
+          - name: relevance
+            description: Relevance score for the movie and genome-tag combination.
+
+
+      - name: r_links
+        identifier: raw_links
+        description: >
+          External identifiers linking MovieLens movies to IMDb and TMDB.
+
+        columns:
+          - name: movieId
+            description: Unique MovieLens movie identifier.
+
+          - name: imdbId
+            description: Corresponding IMDb identifier.
+
+          - name: tmdbId
+            description: Corresponding TMDB identifier.
